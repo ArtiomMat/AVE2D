@@ -1,4 +1,5 @@
-#pragma once
+#ifndef I_DEFS
+#define I_DEFS
 
 // Contains declerations for i_misc.c too
 
@@ -148,3 +149,4 @@ typedef enum
 	KBTAB=0x09,
 	KBCAPS=0x14,
 } key_t;
+#endif

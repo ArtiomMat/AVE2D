@@ -1,12 +1,14 @@
 // Full AI logic here.
 
-#include "g_state.h"
+#include "g_local.h"
 #include <math.h>
 
-char InSight(mover_t a, mover_t b)
+char InSight(sprite_t a, sprite_t b)
 {
-	int ax = (int)round(a.x),  ay = (int)round(a.y);
-	int bx = (int)round(b.x),  by = (int)round(b.y);
+	// Life hax with Artiom:
+	// You can round integers to other integers by dividing and multiplying them!
+	int ax = a.x/MAPSIZE*MAPSIZE,  ay = a.y/MAPSIZE*MAPSIZE;
+	int bx = b.x/MAPSIZE*MAPSIZE,  by = b.y/MAPSIZE*MAPSIZE;
 
 	if (ax == bx)
 	{
@@ -16,6 +18,11 @@ char InSight(mover_t a, mover_t b)
 				ay++;
 			else
 				ay--;
+			if (mapid_data[ax + ay*MAPSIZE] == WALLS)
+				return 0;
+			if (ay == by)
+				return 1;
+
 		}
 	}
 	else if (ay == by)
@@ -29,27 +36,27 @@ char InSight(mover_t a, mover_t b)
 	return 1;
 }
 
-void JessicaMove(mover_t *m)
+void JessicaMove(sprite_t *m)
 {
 
 }
 
-void AshlyMove(mover_t *m)
+void AshlyMove(sprite_t *m)
 {
 
 }
 
-void LucyMove(mover_t *m)
+void LucyMove(sprite_t *m)
 {
 
 }
 
-void TrixMove(mover_t *m)
+void TrixMove(sprite_t *m)
 {
 
 }
 
-void PopoMove(mover_t *m0, mover_t *m1)
+void PopoMove(sprite_t *m0, sprite_t *m1)
 {
 
 }

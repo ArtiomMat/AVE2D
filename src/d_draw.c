@@ -11,7 +11,7 @@ extern char wpxsize;
 
 void D_Init(const char *palfp)
 {
-	A_NewVar("maxfps", "30", NULL);
+	A_NewVar("maxfps", "30", NULL, true);
 
 	FILE *f = fopen(palfp, "rb");
 	if (f)
@@ -26,12 +26,12 @@ void D_Init(const char *palfp)
 	}
 }
 
-sprite_t *D_NewSprite(int x, int y, imgdat_t *idp, int layer)
+sprite_t *D_NewSprite(int x, int y, aid_t *aid, int layer)
 {
 	sprite_t *s = malloc(sizeof (*s));
 	s->x = x;
 	s->y = y;
-	s->idp = idp;
+	s->aid = aid;
 	s->prev = lasts[layer];
 	s->layer = layer;
 	
@@ -78,20 +78,20 @@ void D_Draw(void)
 		for (sprite_t *s = &lasts[l][0]; s; s = s->prev)
 		{
 			// Cap frame
-			if (s->frame > s->idp->frames-1)
-				s->frame = s->idp->frames-1;
+			if (s->frame > s->aid->frames-1)
+				s->frame = s->aid->frames-1;
 			
 			// Get pixel data from current frame
-			char *fdat = s->idp->data + 
-						s->frame * s->idp->width * s->idp->height;
+			char *fdat = s->aid->data + 
+						s->frame * s->aid->width * s->aid->height;
 			
 			// FIXME: Segfault when the X and Y are below 0.
 			// No wonder.
-			for (int y = 0; y < s->idp->height && (s->y+y) < wheight; y++)
+			for (int y = 0; y < s->aid->height && (s->y+y) < wheight; y++)
 			{
-				for (int x = 0; x < s->idp->width && (s->x+x) < wwidth; x++)
+				for (int x = 0; x < s->aid->width && (s->x+x) < wwidth; x++)
 				{
-					char p = fdat[y*s->idp->width + x]; // Pixel to put
+					char p = fdat[y*s->aid->width + x]; // Pixel to put
 					// NULL color?
 					if (p == 0)
 						continue;
@@ -123,7 +123,7 @@ void D_Draw(void)
 	tstart = timeGetTime();
 }
 
-imgdat_t *D_LoadAID(const char *fp)
+aid_t *D_LoadAID(const char *fp)
 {
 	FILE *f = fopen(fp, "rb");
 	if (!f)
@@ -132,7 +132,7 @@ imgdat_t *D_LoadAID(const char *fp)
 	char magic[4];
 	fread(magic, 4, 1, f);
 	
-	imgdat_t *ret = malloc(sizeof (imgdat_t));
+	aid_t *ret = malloc(sizeof (aid_t));
 	fread(&ret->width, 4, 1, f);
 	fread(&ret->height, 4, 1, f);
 	fread(&ret->frames, 4, 1, f);
@@ -145,7 +145,7 @@ imgdat_t *D_LoadAID(const char *fp)
 	return ret;
 }
 
-void D_UnloadAID(imgdat_t *id)
+void D_UnloadAID(aid_t *id)
 {
 	free(id->data);
 	free(id);

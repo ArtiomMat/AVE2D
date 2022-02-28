@@ -15,7 +15,8 @@ void A_Init(int c, char **v)
 	unsigned len = strlen(v[0]);
 	for (len-=1; v[0][len-1] != '/' && v[0][len-1] != '\\'; len--);
 	exepath = malloc(len);
-	strcpy_s(exepath, len, v[0]);
+	for (int i  = 0; i < len; i++)
+		exepath[i] = v[0][i];
 }
 
 #ifndef NOSPASHSHIT
@@ -188,7 +189,7 @@ char splashdata[] =
 // Time in seconds
 void A_Splash(char time)
 {
-	imgdat_t id;
+	aid_t id;
 	id.data = splashdata;
 	id.frames = 2;
 	id.height = SPLASHH;
@@ -203,6 +204,8 @@ void A_Splash(char time)
 	int framecount = 0;
 	while (framecount/5.0f <= time)
 	{
+		if (i_keys[' '])
+			break;
 		s->frame=!s->frame;
 		D_Draw();
 		framecount++;
@@ -231,9 +234,7 @@ int A_FindArg(char *arg)
 char relpath[256];
 char *A_RelPath(const char *fp)
 {
-	puts(exepath);
 	strcpy(relpath, exepath);
 	strcat(relpath, fp);
 	return relpath;
 }
-

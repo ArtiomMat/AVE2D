@@ -70,7 +70,7 @@ void I_InitVideo(int width, int height, char pxsize)
 	// Adjusting the window size
 	// Thank you so much Id for making Quake open source.
 	RECT r;
-	int w, h, x, y;
+	int w, h;
 	
 	r.left = 0;
 	r.top = 0;
@@ -80,8 +80,6 @@ void I_InitVideo(int width, int height, char pxsize)
 	AdjustWindowRect (&r, WSTYLE, 0);
 	w = r.right - r.left;
 	h = r.bottom - r.top;
-	x = 0;
-	y = 0;
 
 	hwnd = CreateWindowEx(0, CLASSNAME, "AVE GAME",
 		WSTYLE,

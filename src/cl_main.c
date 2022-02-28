@@ -13,22 +13,23 @@ void Errorf(char *fmt, ...)
 	vsprintf(buf, fmt, args);
 	va_end(args);
 
-	printf("CLIENT ERROR: %s", buf);
+	printf("CLIENT ERROR: %s\n", buf);
 	exit(1);
 }
 
 void CL_Close(int code)
 {
-	exit(0);
+	A_WriteConfig();
+	exit(code);
 }
 
 void CL_Init(void)
 {
 	// RemoveBu
 
-	puts(
-		"=====================================\n\n"
-		"Initializing system interfaces...");
+	puts("=====================================\n\n");
+
+	puts("Initializing system interfaces...");
 	I_Init();
 
 	int p;
@@ -41,19 +42,22 @@ void CL_Init(void)
 	{
 		scale = atoi(ave_v[p+1]);
 		if (scale < 1 || scale > 2)
-			Errorf("Scale value can only be between 1 and 2");
+			Errorf("Scale value can only be between 1 and 2.");
 	}
 	
 	I_InitVideo((MAPSIZE) * CHARSIZE, (MAPSIZE) * CHARSIZE, scale);
 	// I_InitVideo(100, 100, 3);
 
 	puts("Initializing drawing module...");
-	D_Init("PAL");
+	D_Init(A_RelPath("DATA/PALETTE"));
 
 	// Setting up some variables
 	
+	puts("Reading RC file...");
+	A_ReadConfig();
+	
 	A_SetVar("maxfps", "12");
-	A_Splash(2);
+	A_Splash(7);
 
 	puts("Generating the level...");
 	G_InitLevel();
@@ -64,7 +68,7 @@ void CL_Init(void)
 		"=======================\n");
 
 	/*
-	imgdat_t id;
+	aid_t id;
 	id.width = 10;
 	id.height = 10;
 	id.frames = 2;
@@ -82,11 +86,9 @@ void CL_Init(void)
 	s2->frame = 1;
 	s3->frame = 1;
 	*/
-	imgdat_t *id = D_LoadAID("FUCK.aid");
-		// printf("FRAMES %d\nWIDHT %d\nHEIGHT %d\nDATA %d\n", id->frames, id->width, id->height, id->data[0]);
-	sprite_t *s = D_NewSprite(20, 24, id, 1);
 	while (1)
 	{
+		G_Update();
 		D_Draw();
 	}
 }

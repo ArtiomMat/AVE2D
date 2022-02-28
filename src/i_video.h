@@ -1,4 +1,5 @@
-#pragma once
+#ifndef I_VIDEO
+#define I_VIDEO
 
 #include "a_ave.h"
 
@@ -29,3 +30,5 @@ void I_KillVideo(void);
 void I_SetPalette(char* palette);
 
 void I_EndFrame(void);
+
+#endif

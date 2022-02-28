@@ -17,7 +17,7 @@ char astrcpy(char *dest, const char *src, unsigned ds)
 	return ds == ss;
 }
 
-dvar_t *A_NewVar(char *name, char *str, void (*call)(dvar_t *))
+dvar_t *A_NewVar(char *name, char *str, void (*call)(dvar_t *), char save)
 {
 	dvar_t *dv = malloc(sizeof (*dv));
 	// Set up the variable
@@ -25,7 +25,8 @@ dvar_t *A_NewVar(char *name, char *str, void (*call)(dvar_t *))
 	astrcpy(dv->str, str, 16);	// str
 	dv->val = atof(dv->str);	// val
 	dv->call = call;			// call
-	dv->next = last;			// next
+	dv->prev = last;			// next
+	dv->save = save;			// save
 	
 	last = dv;
 	return dv;
@@ -36,11 +37,11 @@ dvar_t *A_DeleteVar(char *name)
 	// We need: PREV -> SELF -> NEXT
 	// A_FindVar wont help us much here, so...
 	dvar_t *prev, *self, *next;
-	for (prev = last; prev; prev = prev->next)
-		if (!strcmp(prev->next->name, name))
+	for (prev = last; prev; prev = prev->prev)
+		if (!strcmp(prev->prev->name, name))
 		{
-			self = prev->next;
-			next = self->next;
+			self = prev->prev;
+			next = self->prev;
 			break;
 		}
 	// If there is no self, nothing was found.
@@ -48,7 +49,7 @@ dvar_t *A_DeleteVar(char *name)
 		return NULL;
 	
 	free(self);
-	prev->next = next;
+	prev->prev = next;
 	return prev;
 }
 
@@ -78,7 +79,7 @@ dvar_t *A_SetVar(char *name, char *str)
 dvar_t *A_FindVar(char *name)
 {
 	dvar_t *dv;
-	for (dv = last; dv; dv = dv->next)
+	for (dv = last; dv; dv = dv->prev)
 		if (!strcmp(name, dv->name))
 			return dv;
 	
@@ -89,4 +90,62 @@ dvar_t *A_FindVar(char *name)
 dvar_t *A_Command(char *cmd)
 {
 	return NULL;
+}
+
+void A_ReadConfig(void)
+{
+	FILE *f = fopen(A_RelPath("CONFIG"), "r");
+	if (f)
+	{
+		fseek(f, 0, SEEK_END);
+		long size = ftell(f);
+		char *cfg = malloc(size);
+		fseek(f, 0, SEEK_SET);
+		fread(cfg, size, 1, f);
+		char name[24];
+		char str[16];
+		unsigned ni = 0, si = 0, nd = 0; // Name done
+		for (int i = 0; i < size; i++)
+		{
+			if (cfg[i] == ' ')
+			{
+				name[ni] = 0;
+				nd = 1;
+			}
+			else if (cfg[i] == '\n')
+			{
+				str[si] = 0;
+				if (A_FindVar(name))
+					A_SetVar(name, str);
+				else
+					printf("A_ReadConfig: Variable '%s' does not exist.\n", name);
+				// Resetting stuff
+				nd = ni = si = 0;
+			}
+			else if (nd)
+				str[si++] = cfg[i];
+			else
+				name[ni++] = cfg[i];
+		}
+		fclose(f);
+	}
+}
+
+void A_WriteConfig(void)
+{
+	FILE *f = fopen(A_RelPath("CONFIG"), "w");
+	dvar_t *dvs = last;
+	for (; dvs; dvs = dvs->prev)
+	{
+		if (dvs->save)
+		{
+			unsigned lname = strlen(dvs->name);
+			unsigned lstr = strlen(dvs->str);
+			fwrite(dvs->name, lname, 1, f);
+			fwrite(" ", 1, 1, f);
+			fwrite(dvs->str, lstr, 1, f);
+			fwrite("\n", 1, 1, f);
+		}
+	}
+	fclose(f);
 }

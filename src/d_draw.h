@@ -11,12 +11,12 @@ typedef struct imgdat_s
 {
 	unsigned width, height, frames;
 	char *data;
-} imgdat_t;
+} aid_t;
 
 typedef struct sprite_s
 {
 	int x, y, frame;
-	imgdat_t *idp;
+	aid_t *aid;
 	
 	unsigned char layer;
 	struct sprite_s *next;
@@ -27,11 +27,11 @@ void D_Init(const char *palfp);
 
 void D_Draw(void);
 
-imgdat_t *D_LoadAID(const char *fp);
-void D_UnloadAID(imgdat_t *id);
+aid_t *D_LoadAID(const char *fp);
+void D_UnloadAID(aid_t *id);
 
 // You better not leak out this pointer.
-sprite_t *D_NewSprite(int x, int y, imgdat_t *idp, int layer);
+sprite_t *D_NewSprite(int x, int y, aid_t *aid, int layer);
 void D_DeleteSprite(sprite_t *s);
 void D_DeleteAllSprites(void);
 
