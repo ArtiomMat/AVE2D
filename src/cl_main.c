@@ -56,7 +56,7 @@ void CL_Init(void)
 	puts("Reading RC file...");
 	A_ReadConfig();
 	
-	A_SetVar("maxfps", "12");
+	A_SetVar("maxfps", "24");
 	A_Splash(7);
 
 	puts("Generating the level...");
