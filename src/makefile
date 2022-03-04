@@ -13,9 +13,11 @@ all: ../bin/GAME.exe
 
 ##################################################################
 
-outs = a_dev.exe cl_main.exe i_video.exe a_ave.exe g_game.exe i_misc.exe a_main.exe d_draw.exe g_ai.exe
+outs = a_dev.exe cl_main.exe a_splash.exe i_video.exe a_ave.exe g_game.exe i_misc.exe a_main.exe d_draw.exe g_ai.exe
 
 a_dev.exe: a_dev.c
+	$(cc) $(flags) -o $@ -c $^
+a_splash.exe: a_splash.c
 	$(cc) $(flags) -o $@ -c $^
 cl_main.exe: cl_main.c
 	$(cc) $(flags) -o $@ -c $^

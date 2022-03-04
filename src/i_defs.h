@@ -20,9 +20,6 @@ typedef int int32_t;
 typedef short int16_t;
 typedef char int8_t;
 
-typedef double float64_t;
-typedef float float32_t;
-
 typedef enum {false = 0, true = 1, both = 2} bool;
 
 void I_Init(void);

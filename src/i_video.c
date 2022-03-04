@@ -152,7 +152,7 @@ void I_SetPalette(char* pal)
 	LOGPALETTE *logpal = ( LOGPALETTE * ) &s_ipal;
 	RGBQUAD			colors[256];
 
-	for (int i = 0; i < 256; i++, pal += 3 )
+	for (int i = 0; i < 254; i++, pal += 3 )
 	{
 		colors[i].rgbRed   = pal[0];
 		colors[i].rgbGreen = pal[1];
@@ -168,6 +168,11 @@ void I_SetPalette(char* pal)
 	colors[255].rgbGreen = 0xFF;
 	colors[255].rgbBlue  = 0xFF;
 	colors[255].rgbReserved = 0;
+
+	colors[254].rgbRed   = 0;
+	colors[254].rgbGreen = 0;
+	colors[254].rgbBlue  = 0;
+	colors[254].rgbReserved = 0;
 
 	SetDIBColorTable(hdibdc, 0, 256, colors);
 /*

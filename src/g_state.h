@@ -6,6 +6,8 @@
 
 #include "d_draw.h"
 
+#define KIDSMODE
+
 #define CHARSIZE 24
 #define MAPSIZE 20
 

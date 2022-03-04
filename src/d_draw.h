@@ -7,10 +7,10 @@
 
 extern unsigned d_delt;
 
-typedef struct imgdat_s
+typedef struct
 {
-	unsigned width, height, frames;
-	char *data;
+	uint32_t width, height, frames;
+	uint8_t *data;
 } aid_t;
 
 typedef struct sprite_s
@@ -18,6 +18,7 @@ typedef struct sprite_s
 	int x, y, frame;
 	aid_t *aid;
 	
+	bool hide;
 	unsigned char layer;
 	struct sprite_s *next;
 	struct sprite_s *prev; 

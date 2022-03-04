@@ -34,6 +34,7 @@ sprite_t *D_NewSprite(int x, int y, aid_t *aid, int layer)
 	s->aid = aid;
 	s->prev = lasts[layer];
 	s->layer = layer;
+	s->hide = 0;
 	
 	// Defaults
 	s->next = NULL;
@@ -77,6 +78,8 @@ void D_Draw(void)
 	{
 		for (sprite_t *s = &lasts[l][0]; s; s = s->prev)
 		{
+			if (s->hide)
+				continue;
 			// Cap frame
 			if (s->frame > s->aid->frames-1)
 				s->frame = s->aid->frames-1;

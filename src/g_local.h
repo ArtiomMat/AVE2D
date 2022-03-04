@@ -11,6 +11,25 @@
 #define FUCKMAN		6
 #define WALLS		7
 
-extern char mapid_data[CHARSIZE*CHARSIZE];
+typedef enum
+{
+	NODIR=0,
+	   NORTH=1,
+	WEST,   EAST,
+	   SOUTH,
+} dir_t;
+
+extern sprite_t *s_fuckman;
+// extern char mapid_data[CHARSIZE*CHARSIZE];
+extern aid_t *g_level;
+
+extern dir_t p_dir;
+
+void JessicaMove(sprite_t *jessica);
+void AshleyMove(sprite_t *jessica);
+void TrixMove(sprite_t *jessica);
+void LucyMove(sprite_t *jessica);
+
+bool CanGo(sprite_t *s, int speed, dir_t d);
 
 #endif

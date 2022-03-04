@@ -9,20 +9,19 @@
 
 #include "d_draw.h"
 
-extern char **ave_v;
-extern int ave_c;
+extern char **a_v;
+extern int a_c;
 
 void A_Init(int c, char **v);
 // -1 if not found, index if found.
 int A_FindArg(char *arg);
 
-// Returns path where it starts from the EXE path
+// Returns path where it starts from the EXE path. For example
 // If exe path is 'bin/GAME.exe' then the return is 'bin/'+'fp'
-// !! not thread safe !!
+// !! Not thread safe boiz !!
 char *A_RelPath(const char *fp);
 
 #ifndef NOSPASHSHIT
-// In seconds
-void A_Splash(char time);
-
+	// In seconds
+	void A_Splash(char time);
 #endif

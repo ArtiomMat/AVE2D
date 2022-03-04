@@ -8,13 +8,6 @@ sprite_t *s_trix, *s_lucy, *s_jessica, *s_ash, *s_popo, *s_fuckman;
 // This one is special, using next and prev I'll cycle through them.
 sprite_t *s_money;
 
-typedef enum
-{
-	NODIR=0,
-	   NORTH=1,
-	WEST,  EAST,
-	   SOUTH,
-} dir_t;
 // Current direction of fuckman
 dir_t p_dir = NODIR;
 // The direction to wait for when get the chance to switch direction
@@ -54,6 +47,26 @@ void Go(sprite_t *s, int speed, dir_t dir)
 	}
 }
 
+dir_t InvertDir(dir_t dir)
+{
+	switch (dir)
+	{
+		case NORTH:
+		return SOUTH;
+		break;
+		case EAST:
+		return WEST;
+		break;
+		case WEST:
+		return EAST;
+		break;
+		case SOUTH:
+		return NORTH;
+		break;
+	}
+	return NODIR;
+}
+
 bool AlignedToSize(sprite_t *s)
 {
 	int roundx = Align(s->x, s->aid->width);
@@ -84,7 +97,8 @@ bool CanGo(sprite_t *s, int speed, dir_t d)
 
 		int mapx = (s->x);
 		int mapy = (s->y);
-		
+		// What I am doing is look forward to the player's direction.
+		// This works fine, and never fails, but who knows.
 		switch(d)
 		{
 			case NORTH:
@@ -106,15 +120,15 @@ bool CanGo(sprite_t *s, int speed, dir_t d)
 		if (g_level->data[mapy*MAPSIZE + mapx] == WALLS)
 			return false;
 	}
+
 	return true;
 }
 
 void G_Update(void)
 {
-	// Make fuckman open and close mouth every 3rd frame
 	if (p_dir)
 	{
-		if (mouthskipper == 4)
+		if (mouthskipper == 2)
 		{
 			mouthskipper = 0;
 			s_fuckman->frame = !s_fuckman->frame;
@@ -156,6 +170,15 @@ void G_Update(void)
 		pressedsamedir = p_dir == EAST;
 		p_dir = EAST;
 	}
+	// Money collection
+	unsigned mapx = s_fuckman->x / s_fuckman->aid->width;
+	unsigned mapy = s_fuckman->y / s_fuckman->aid->height;
+	if (AlignedToSize(s_fuckman) && g_level->data[mapy*MAPSIZE + mapx] == WALKABLE && maps[mapx][mapy])
+	{
+		D_DeleteSprite(maps[mapx][mapy]);
+		maps[mapx][mapy] = NULL; // To not fuck up
+		moneyleft--;
+	}
 	
 	if (CanGo(s_fuckman, p_speed, p_dir))
 	{
@@ -195,8 +218,19 @@ void G_Update(void)
 			p_wdir = NODIR;
 		}
 	}
-	
+
+	if (moneyleft == 0)
+	{
+		moneyleft--;
+		puts("OH SHIT. TIME TO GET SOME BITCHES ON YOUR DICK!");
+	}
+
 	Go(s_fuckman, p_speed, p_dir);
+
+	JessicaMove(s_jessica);
+	AshleyMove(s_ash);
+	LucyMove(s_lucy);
+	TrixMove(s_trix);
 
 	// TODO: collision check
 }
@@ -226,7 +260,7 @@ void G_InitLevel(void)
 			if (g_level->data[MAPSIZE*y+x] == WALKABLE)
 			{
 				moneyleft++;
-				s_money = D_NewSprite(x*CHARSIZE, y*CHARSIZE, D_LoadAID(A_RelPath("DATA/MONEY.aid")), 0);
+				maps[x][y] = D_NewSprite(x*CHARSIZE, y*CHARSIZE, D_LoadAID(A_RelPath("DATA/MONEY.aid")), 0);
 			}
 			else if (g_level->data[MAPSIZE*y+x] == TRIX)
 				s_trix = D_NewSprite(x*CHARSIZE, y*CHARSIZE, D_LoadAID(A_RelPath("DATA/TRIX.aid")), 1);

@@ -40,7 +40,7 @@ void CL_Init(void)
 	p = A_FindArg("-s");
 	if (p != -1)
 	{
-		scale = atoi(ave_v[p+1]);
+		scale = atoi(a_v[p+1]);
 		if (scale < 1 || scale > 2)
 			Errorf("Scale value can only be between 1 and 2.");
 	}
@@ -53,19 +53,26 @@ void CL_Init(void)
 
 	// Setting up some variables
 	
-	puts("Reading RC file...");
-	A_ReadConfig();
+	// puts("Reading RC file...");
+	// A_ReadConfig();
 	
 	A_SetVar("maxfps", "24");
 	A_Splash(7);
 
 	puts("Generating the level...");
 	G_InitLevel();
-
+	
+	#ifndef KIDSMODE
 	puts(
 		"=======================\n"
 		" WELCOME TO FUCKMAN tm \n"
 		"=======================\n");
+	#else
+	puts(
+		"=========================\n"
+		" WELCOME TO YELLOWMAN tm \n"
+		"=========================\n");
+	#endif
 
 	/*
 	aid_t id;
@@ -86,9 +93,30 @@ void CL_Init(void)
 	s2->frame = 1;
 	s3->frame = 1;
 	*/
+	bool g_pause = false;
+
+	// Hard coded but it's alright
+	aid_t *i_pause = D_LoadAID(A_RelPath("DATA/PAUSE.aid"));
+	for (int i = 0; i < i_pause->width*i_pause->height; i++)
+		if (i_pause->data[i] == 2)
+			i_pause->data[i] = 0xFE;
+		else if (i_pause->data[i] == 1)
+			i_pause->data[i] = 0xFF;
+	sprite_t *s_pause = D_NewSprite(MAPSIZE*CHARSIZE/2-120/2, MAPSIZE*CHARSIZE/2-24/2, i_pause, 2);
+	s_pause->hide = 1; // Hide in beginning
+	
 	while (1)
 	{
-		G_Update();
+		if (i_keys[' '] == 1)
+		{
+			g_pause = !g_pause;
+			if (g_pause)
+				s_pause->hide = 0;
+			else
+				s_pause->hide = 1;
+		}
+		if (!g_pause)
+			G_Update();
 		D_Draw();
 	}
 }
