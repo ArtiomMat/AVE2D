@@ -62,6 +62,9 @@ void CL_Init(void)
 	puts("Generating the level...");
 	G_InitLevel();
 	
+	puts("Initializing my very complex AI...");
+	AI_Init();
+
 	#ifndef KIDSMODE
 	puts(
 		"=======================\n"

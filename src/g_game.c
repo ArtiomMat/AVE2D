@@ -116,8 +116,9 @@ bool CanGo(sprite_t *s, int speed, dir_t d)
 		}
 		mapx /= s->aid->width;
 		mapy /= s->aid->height;
-
-		if (g_level->data[mapy*MAPSIZE + mapx] == WALLS)
+		
+		char thing = g_level->data[mapy*MAPSIZE + mapx];
+		if (thing == WALLS)
 			return false;
 	}
 

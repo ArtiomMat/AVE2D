@@ -11,6 +11,8 @@
 #define CHARSIZE 24
 #define MAPSIZE 20
 
+void AI_Init(void);
+
 void G_InitLevel(void);
 void G_Update(void);
 
