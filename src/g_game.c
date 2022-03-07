@@ -125,6 +125,9 @@ bool CanGo(sprite_t *s, int speed, dir_t d)
 	return true;
 }
 
+
+bool jalive = 1, aalive = 1, lalive = 1, talive = 1;
+
 void G_Update(void)
 {
 	if (p_dir)
@@ -223,15 +226,41 @@ void G_Update(void)
 	if (moneyleft == 0)
 	{
 		moneyleft--;
-		puts("OH SHIT. TIME TO GET SOME BITCHES ON YOUR DICK!");
+		#ifdef KIDSMODE
+			puts("OH SHIT. TIME TO GET SOME BITCHES ON YOUR DICK!");
+		#else
+			puts("Oh boy, time to impress some lovely women with your money.");
+		#endif
 	}
-
+	
 	Go(s_fuckman, p_speed, p_dir);
 
-	JessicaMove(s_jessica);
-	AshleyMove(s_ash);
-	LucyMove(s_lucy);
-	TrixMove(s_trix);
+	#ifdef KIDSMODE
+		const unsigned deathframe = CENSORED;
+	#else
+		const unsigned deathframe = UNCENSORED;
+	#endif
+
+	if (!jalive && AlignedToSize(s_jessica))
+		s_jessica->frame = deathframe;
+	else
+		JessicaMove(s_jessica);
+	
+	if (!aalive && AlignedToSize(s_ash))
+		s_ash->frame = deathframe+1;
+	else
+		AshleyMove(s_ash);
+	
+	if (!lalive && AlignedToSize(s_lucy))
+		s_lucy->frame = deathframe;
+	else
+		LucyMove(s_lucy);
+		
+	if (!talive && AlignedToSize(s_trix))
+		s_trix->frame = deathframe;
+	else
+		TrixMove(s_trix);
+
 
 	// TODO: collision check
 }

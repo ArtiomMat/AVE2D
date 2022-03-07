@@ -13,6 +13,7 @@ typedef struct
 	RGBQUAD colors[256];
 } dibinfo_t;
 
+
 // I shamelesly copied from Quake 2
 typedef struct
 {

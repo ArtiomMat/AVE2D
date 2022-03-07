@@ -1,8 +1,10 @@
 cc = gcc
 res = windres
 
-lib = -lgdi32 -lwinmm
-flags = -g -Wall -Wfatal-errors
+#others = -lothers/openal32.lib
+
+lib = -lgdi32 -lwinmm -lopenal32
+flags = -Lothers -Iothers -g -Wall -Wfatal-errors
 
 ifeq ($(shell uname), Linux)	# Linux
 	cc := i686-w64-mingw32-gcc
@@ -13,9 +15,11 @@ all: ../bin/GAME.exe
 
 ##################################################################
 
-outs = a_dev.exe cl_main.exe a_splash.exe i_video.exe a_ave.exe g_game.exe i_misc.exe a_main.exe d_draw.exe g_ai.exe
+outs = a_dev.exe cl_main.exe a_splash.exe i_video.exe a_ave.exe g_game.exe i_misc.exe a_main.exe d_draw.exe g_ai.exe snd_sound.exe
 
 a_dev.exe: a_dev.c
+	$(cc) $(flags) -o $@ -c $^
+snd_sound.exe: snd_sound.c
 	$(cc) $(flags) -o $@ -c $^
 a_splash.exe: a_splash.c
 	$(cc) $(flags) -o $@ -c $^
@@ -39,7 +43,7 @@ g_ai.exe: g_ai.c
 ##################################################################
 
 ../bin/GAME.exe: $(outs)
-	$(cc) -o $@ $(flags) $(outs) $(lib)
+	$(cc) -o $@ $(flags) $(others) $(outs) $(lib)
 
 clean:
 	rm -rf *.exe

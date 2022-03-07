@@ -26,7 +26,7 @@ void CL_Close(int code)
 void CL_Init(void)
 {
 	// RemoveBu
-
+	srand(timeGetTime());
 	puts("=====================================\n\n");
 
 	puts("Initializing system interfaces...");
@@ -55,6 +55,9 @@ void CL_Init(void)
 	
 	// puts("Reading RC file...");
 	// A_ReadConfig();
+
+	puts("Initializing your fucking sound module... Dor...");
+	SND_Init();
 	
 	A_SetVar("maxfps", "24");
 	A_Splash(7);

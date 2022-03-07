@@ -95,6 +95,17 @@ dir_t BestDirOut(sprite_t *ai)
 	return NODIR;
 }
 
+// From Github Copilot, nice job Microsoft.
+bool IsInside(sprite_t *s1, sprite_t *s2)
+{
+	const int limit = 6;
+	if (s1->x+s1->aid->width-limit < s2->x || s1->x > s2->x+s2->aid->width-limit)
+		return false;
+	if (s1->y+s1->aid->height-limit < s2->y || s1->y > s2->y+s2->aid->height-limit)
+		return false;
+	return true;
+}
+
 dir_t Wander(sprite_t *ai, dir_t dir)
 {
 	dir_t nogo = InvertDir(dir); // Can't go back!
@@ -125,6 +136,9 @@ void JessicaMove(sprite_t *jessica)
 	static unsigned tsaw = 0; // How long did we see fuckman?
 	
 	static dir_t dir = NODIR; // Current direction
+
+	if (IsInside(s_fuckman, jessica))
+		jalive = 0;
 
 	if ( InSight(jessica, s_fuckman))
 		tsaw += d_delt;
@@ -174,6 +188,13 @@ void AshleyMove(sprite_t *ash)
 
 	static dir_t dir = NODIR; // Current direction
 
+	if (IsInside(s_fuckman, ash))
+	{
+		if (rage)
+			CL_Close(0);
+		else
+			aalive = 0;
+	}
 	if (rage)
 	{
 		trage+=d_delt;
@@ -234,16 +255,13 @@ void AshleyMove(sprite_t *ash)
 				sprite_t tmp;
 				tmp.x = lastx;
 				tmp.y = lasty;
-				printf("(%u:%u, %u:%u) ", tmp.x, tmp.x/CHARSIZE, tmp.y, tmp.y/CHARSIZE);
 				if (ash->x == tmp.x && ash->y == tmp.y)
 				{
-					puts("I am making a right turn bitch");
 					dir = lastdir; // Go to his last direction
 					lastdir = NODIR; // So that we don't go here when we don't see him
 				}
 				else
 				{
-					puts("I am going to his last location");
 					dir = DirTo(ash, &tmp);
 				}
 			}
@@ -276,6 +294,11 @@ void LucyMove(sprite_t *lucy)
 	static unsigned tsaw = 0;
 
 	static dir_t dir = NODIR; // Current direction
+
+	if (IsInside(s_fuckman, lucy))
+	{
+		lalive = 0;
+	}
 
 	if ( InSight(lucy, s_fuckman))
 		tsaw += d_delt;
@@ -338,6 +361,11 @@ void TrixMove(sprite_t *trix)
 
 	static dir_t dir = NODIR; // Current direction
 
+	if (IsInside(s_fuckman, trix) && moneyleft <= 0)
+	{
+		talive = 0;
+	}
+
 	static int lastmapx = -1, lastmapy = -1;
 	if (go)
 	{
@@ -385,7 +413,6 @@ void TrixMove(sprite_t *trix)
 
 	if (AlignedToSize(trix))
 	{
-
 		if (go)
 			dir = Wander(trix, dir);
 	}
@@ -393,4 +420,12 @@ void TrixMove(sprite_t *trix)
 	if (CanGo(trix, 2, dir))
 		Go(trix, 2, dir);
 }
+
+
+
+
+
+
+
+
 

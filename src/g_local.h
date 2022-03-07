@@ -11,6 +11,9 @@
 #define FUCKMAN		6
 #define WALLS		7
 
+#define UNCENSORED	1
+#define CENSORED	2
+
 typedef enum
 {
 	NODIR=0,
@@ -24,6 +27,10 @@ extern sprite_t *s_fuckman;
 extern aid_t *g_level;
 
 extern dir_t p_dir;
+
+extern bool jalive, aalive, lalive, talive;
+
+extern int moneyleft;
 
 void JessicaMove(sprite_t *jessica);
 void AshleyMove(sprite_t *jessica);

@@ -7,6 +7,7 @@
 
 #include "a_dev.h"
 
+#include "snd_sound.h"
 #include "d_draw.h"
 
 extern char **a_v;
